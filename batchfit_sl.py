@@ -262,8 +262,8 @@ with left:
     x_fit_for_plot = None
     if fr is not None:
         x_fit_for_plot = fr["x_fit"]
-        y_fit = fr["y_fit"]
-    st.write(np.shape(fr["peak_centers"]))
+        y_fit_curve = fr["y_fit_curve"]
+    st.write(fr["peak_centers"])
     # Show signal plot
     plot_signal(
         x, display_y, title=f"{name}",
@@ -271,7 +271,7 @@ with left:
         x_range=x_range,
         peaks=(fr["peak_centers"] if fr is not None else None),
         fit_x=x_fit_for_plot,
-        fit_y=y_fit
+        fit_y=y_fit_curve
     )
     # Show intensity map if multiple datasets
     if len(datasets) > 1:
