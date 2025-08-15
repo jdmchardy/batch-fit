@@ -171,26 +171,27 @@ def plot_intensity_map(xs: List[np.ndarray], ys: List[np.ndarray], overlay_cente
 def peak_params_to_dataframe(fit_results: Dict[int, dict]) -> pd.DataFrame:
     """Create a tidy table of peak parameters from our fit_results dict."""
     # Reuse the user's helper if available; otherwise build our own
-    try:
-        return generate_peak_dataframe(fit_results, None)
-    except Exception:
-        rows = []
-        for idx, fr in fit_results.items():
-            row = {"index": idx, "Filename": fr.get("Filename", f"dataset_{idx}")}
-            centers = fr.get("peak_centers", [])
-            params = fr.get("params", [])
-            func = fr.get("peak_function", "")
-            row["n_peaks"] = len(centers) if centers is not None else 0
-            row["func"] = func
-            if params is not None:
-                for j, p in enumerate(np.array(params).reshape(-1, 4)):
-                    amp, mu, sigma, gl = p
-                    row[f"p{j+1}_amp"] = amp
-                    row[f"p{j+1}_mu"] = mu
-                    row[f"p{j+1}_sigma"] = sigma
-                    row[f"p{j+1}_gl"] = gl
-            rows.append(row)
-        return pd.DataFrame(rows)
+    return generate_peak_dataframe(fit_results, None)
+    #try:
+    #    
+    #except Exception:
+    #    rows = []
+    #    for idx, fr in fit_results.items():
+    #        row = {"index": idx, "Filename": fr.get("Filename", f"dataset_{idx}")}
+    #        centers = fr.get("peak_centers", [])
+    #        params = fr.get("params", [])
+    #        func = fr.get("peak_function", "")
+    #        row["n_peaks"] = len(centers) if centers is not None else 0
+    #        row["func"] = func
+    #        if params is not None:
+    #            for j, p in enumerate(np.array(params).reshape(-1, 4)):
+    #                amp, mu, sigma, gl = p
+    #                row[f"p{j+1}_amp"] = amp
+    #               row[f"p{j+1}_mu"] = mu
+    #                row[f"p{j+1}_sigma"] = sigma
+    #                row[f"p{j+1}_gl"] = gl
+    #        rows.append(row)
+    #    return pd.DataFrame(rows)
 
 # ---------------------------
 # Streamlit UI
