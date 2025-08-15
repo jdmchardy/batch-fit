@@ -66,17 +66,18 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
 
 def plot_signal(x, y, title='', peaks=None, background=None, x_range=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
     fig, ax = plt.subplots(figsize=(8,4))
-    ax.plot(x, y, lw=1, label="Data")
+    ax.plot(x, y, lw=0.8, label="Data", color="black")
     if background is not None:
-        ax.plot(x, background, lw=1, linestyle="--", label="Background")
+        ax.plot(x, background, lw=0.8, linestyle="--", label="Background")
     if x_range is not None:
         ax.axvspan(x_range[0], x_range[1], alpha=0.1, label="Fit window")
+        ax.set_xlim(x_range[0], x_range[1])
     if peaks is not None and len(peaks)>0:
         ax.scatter(peaks, np.interp(peaks, x, y), s=20, marker="x", label="Detected peaks")
     if (fit_x is not None) and (fit_y is not None):
-        ax.plot(fit_x, fit_y, lw=1, label="Peak fit")
-    ax.set_xlabel("X")
-    ax.set_ylabel("Intensity")
+        ax.plot(fit_x, fit_y, lw=0.8, ls="dashed", color="red", label="Peak fit")
+    ax.set_xlabel("2th (deg)")
+    ax.set_ylabel("Intensity (a.u.)")
     ax.set_title(title)
     ax.legend(loc="best")
     st.pyplot(fig)
@@ -147,7 +148,7 @@ with st.sidebar:
     )
 
     st.header("2) Peak model & background")
-    peak_function = st.radio("Peak function", ["Gaussian", "pseudo-Voigt"], index=1)
+    peak_function = st.radio("Peak function", ["Gaussian", "pseudo-Voigt"], index=0)
     # important: the original code checks a global 'selected_function'
     batchfit_mod.selected_function = "Gaussian" if peak_function == "Gaussian" else "PseudoVoigt"
     # Background options
@@ -160,7 +161,7 @@ with st.sidebar:
     st.header("3) Peak detection")
     peak_width = st.number_input("Approx peak FWHM (same units as x)", min_value=0.0, value=0.1, step=0.01, format="%.3f")
     peak_prominence = st.number_input("Peak prominence (fraction of max)", min_value=0.0, max_value=1.0, value=0.05, step=0.01, format="%.3f")
-    max_peaks = st.number_input("Max peaks to fit per ROI", min_value=0, max_value=50, value=5, step=1)
+    max_peaks = st.number_input("Max peaks to fit per ROI", min_value=0, max_value=50, value=1, step=1)
 
     st.header("4) Options")
     background_enabled = st.checkbox("Show background-subtracted data (toggle view)", value=True)
