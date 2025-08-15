@@ -192,6 +192,11 @@ with st.sidebar:
         type=["xy", "txt", "dat", "csv"],
         accept_multiple_files=True
     )
+    if uploaded_files:
+        # Clear button
+        if st.button("Clear uploaded files"):
+            st.session_state.uploaded_files = None
+            st.rerun()
 
     st.header("2) Peak model & background")
     peak_function = st.radio("Peak function", ["Gaussian", "pseudo-Voigt"], index=0)
@@ -222,11 +227,6 @@ if uploaded_files:
             datasets.append((f.name, x, y))
         except Exception as e:
             st.error(f"Failed to load {f.name}: {e}")
-
-    # Clear button
-    if st.button("Clear uploaded files"):
-        st.session_state.uploaded_files = None
-        st.experimental_rerun()
 
 if not datasets:
     st.info("Upload at least one data file to begin.")
