@@ -250,6 +250,7 @@ def fit_peak_to_data(x, y, x_range, max_peaks, threshold, bkg_peak_threshold, bk
                     params_init.extend([amp_guess, cen_guess, wid_guess])
                 params_opt, pcov = curve_fit(lambda x, *params: multi_gaussian(x, *params), x_fit, y_fit, p0=params_init)
                 y_fit_curve = multi_gaussian(x_fit, *params_opt)
+                print(len(y_fit_curve))
             else:
                 pass
             peak_centers = [params_opt[3 * j + 1] for j in range(n_peaks)]
@@ -291,6 +292,7 @@ def fit_peak_to_data(x, y, x_range, max_peaks, threshold, bkg_peak_threshold, bk
                     bounds_upper.extend(bounds_up)
                 params_opt, pcov = curve_fit(lambda x, *params: multi_pseudoVoigt(x, *params), x_fit, y_fit, p0=params_init, bounds=(bounds_lower, bounds_upper))
                 y_fit_curve = multi_pseudoVoigt(x_fit, *params_opt)
+                print(len(y_fit_curve))
             else:
                 pass
             peak_centers = [params_opt[4 * j + 1] for j in range(n_peaks)]
