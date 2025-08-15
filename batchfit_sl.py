@@ -223,6 +223,11 @@ if uploaded_files:
         except Exception as e:
             st.error(f"Failed to load {f.name}: {e}")
 
+    # Clear button
+    if st.button("Clear uploaded files"):
+        st.session_state.uploaded_files = None
+        st.experimental_rerun()
+
 if not datasets:
     st.info("Upload at least one data file to begin.")
     st.stop()
