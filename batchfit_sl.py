@@ -64,7 +64,7 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
         pass
     raise ValueError(f"Could not parse two columns from file: {name}")
 
-def plot_signal(x, y, title="Signal", peaks=None, background=None, x_range=None, y_fit=None, y_fit_curve=None):
+def plot_signal(x, y, title='', background=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
     fig, ax = plt.subplots(figsize=(8,4))
     ax.plot(x, y, lw=1, label="Data")
     if background is not None:
@@ -73,8 +73,8 @@ def plot_signal(x, y, title="Signal", peaks=None, background=None, x_range=None,
         ax.axvspan(x_range[0], x_range[1], alpha=0.1, label="Fit window")
     if peaks is not None and len(peaks)>0:
         ax.scatter(peaks, np.interp(peaks, x, y), s=20, marker="x", label="Detected peaks")
-    if (y_fit is not None) and (y_fit_curve is not None):
-        ax.plot(y_fit[0], y_fit_curve, lw=1, label="Peak fit")
+    if (fit_x is not None) and (fit_y is not None):
+        ax.plot(fit_x, fit_y, lw=1, label="Peak fit")
     ax.set_xlabel("X")
     ax.set_ylabel("Intensity")
     ax.set_title(title)
@@ -269,8 +269,8 @@ with left:
         background=bg_for_plot,
         x_range=x_range,
         peaks=(fr["peak_centers"] if fr is not None else None),
-        y_fit=x_fit_for_plot,
-        y_fit_curve=y_fit_curve
+        fit_x=x_fit_for_plot,
+        fit_y_curve=y_fit_curve
     )
     # Show intensity map if multiple datasets
     if len(datasets) > 1:
