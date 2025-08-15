@@ -263,7 +263,7 @@ with left:
     if fr is not None:
         x_fit_for_plot = fr["x_fit"]
         y_fit = fr["y_fit"]
-    st.write(np.shape(fr["peak_centers"])
+    st.write(np.shape(fr["peak_centers"]))
     # Show signal plot
     plot_signal(
         x, display_y, title=f"{name}",
