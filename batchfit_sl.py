@@ -66,7 +66,10 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
 
 def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x_range_view=None,
                 peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
-                    
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import streamlit as st
+
     # Create figure with two rows: main plot + residuals
     fig, (ax, ax_resid) = plt.subplots(
         2, 1, figsize=(8, 6),
@@ -80,19 +83,17 @@ def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x
         ax.plot(x, background, lw=0.8, linestyle="--", label="Background")
     if x_range_ROI is not None:
         ax.axvspan(x_range_ROI[0], x_range_ROI[1], alpha=0.1, label="Fit window")
-    if x_range_view is not None:
-        ax.set_xlim(x_range_view[0], x_range_view[1])
     if peaks is not None and len(peaks) > 0:
         ax.scatter(peaks, np.interp(peaks, x, y), s=20, marker="x", label="Detected peaks")
     if (fit_x is not None) and (fit_y is not None):
         ax.plot(fit_x, fit_y, lw=0.8, ls="dashed", color="red", label="Peak fit")
+
     ax.set_ylabel("Intensity (a.u.)")
     ax.set_title(title)
     ax.legend(loc="best")
 
     # --- Residuals plot ---
     if (fit_x is not None) and (fit_y is not None):
-        # Interpolate fit_y onto the same x as the data
         fit_interp = np.interp(x, fit_x, fit_y)
         residuals = y - fit_interp
         ax_resid.plot(x, residuals, lw=0.8, color="blue")
@@ -104,6 +105,25 @@ def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x
         ax_resid.set_ylabel("Residuals")
 
     ax_resid.set_xlabel("2θ (deg)")
+
+    # --- X range and dynamic Y range scaling ---
+    if x_range_view is not None:
+        ax.set_xlim(x_range_view[0], x_range_view[1])
+
+        # mask data to only what's inside x_range_view
+        mask = (x >= x_range_view[0]) & (x <= x_range_view[1])
+        if np.any(mask):
+            # Main plot y limits
+            y_min, y_max = np.min(y[mask]), np.max(y[mask])
+            ax.set_ylim(y_min - 0.05*(y_max - y_min), y_max + 0.05*(y_max - y_min))
+
+            # Residuals y limits
+            if (fit_x is not None) and (fit_y is not None):
+                resid_mask = (x >= x_range_view[0]) & (x <= x_range_view[1])
+                resid_vals = residuals[resid_mask]
+                if resid_vals.size > 0:
+                    rmin, rmax = np.min(resid_vals), np.max(resid_vals)
+                    ax_resid.set_ylim(rmin - 0.05*(rmax - rmin), rmax + 0.05*(rmax - rmin))
 
     plt.tight_layout()
     st.pyplot(fig)
