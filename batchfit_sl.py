@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -198,7 +197,7 @@ def peak_params_to_dataframe(fit_results: Dict[int, dict]) -> pd.DataFrame:
 # ---------------------------
 st.set_page_config(page_title="Batch Peak Fitting (Streamlit)", layout="wide")
 st.title("Batch Peak Fitting")
-st.caption("Converted from your original interactive matplotlib/Tkinter tool to Streamlit.")
+st.caption("A developing tool for rapid batch fitting of integrated XRD data.")
 
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = 0
