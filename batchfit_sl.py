@@ -35,7 +35,7 @@ class UploadedFileWrapper:
     def read(self):
         with open(self._file_path, "rb") as f:
             return f.read()
-    def as_file_like(self):
+    def seek(self):
         """Return a seekable file-like object"""
         return io.BytesIO(self.read())
             
