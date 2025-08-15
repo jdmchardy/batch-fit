@@ -64,8 +64,17 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
         pass
     raise ValueError(f"Could not parse two columns from file: {name}")
 
-def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x_range_view=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
-    fig, ax = plt.subplots(figsize=(8,4))
+def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x_range_view=None,
+                peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
+                    
+    # Create figure with two rows: main plot + residuals
+    fig, (ax, ax_resid) = plt.subplots(
+        2, 1, figsize=(8, 6),
+        gridspec_kw={'height_ratios': [3, 1]},
+        sharex=True
+    )
+
+    # --- Main plot ---
     ax.plot(x, y, lw=0.8, label="Data", color="black")
     if background is not None:
         ax.plot(x, background, lw=0.8, linestyle="--", label="Background")
@@ -73,14 +82,30 @@ def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x
         ax.axvspan(x_range_ROI[0], x_range_ROI[1], alpha=0.1, label="Fit window")
     if x_range_view is not None:
         ax.set_xlim(x_range_view[0], x_range_view[1])
-    if peaks is not None and len(peaks)>0:
+    if peaks is not None and len(peaks) > 0:
         ax.scatter(peaks, np.interp(peaks, x, y), s=20, marker="x", label="Detected peaks")
     if (fit_x is not None) and (fit_y is not None):
         ax.plot(fit_x, fit_y, lw=0.8, ls="dashed", color="red", label="Peak fit")
-    ax.set_xlabel("2th (deg)")
     ax.set_ylabel("Intensity (a.u.)")
     ax.set_title(title)
     ax.legend(loc="best")
+
+    # --- Residuals plot ---
+    if (fit_x is not None) and (fit_y is not None):
+        # Interpolate fit_y onto the same x as the data
+        fit_interp = np.interp(x, fit_x, fit_y)
+        residuals = y - fit_interp
+        ax_resid.plot(x, residuals, lw=0.8, color="blue")
+        ax_resid.axhline(0, color="gray", lw=0.8, ls="--")
+        ax_resid.set_ylabel("Residuals")
+    else:
+        ax_resid.text(0.5, 0.5, "No fit → no residuals", ha="center", va="center",
+                      transform=ax_resid.transAxes, fontsize=9, color="gray")
+        ax_resid.set_ylabel("Residuals")
+
+    ax_resid.set_xlabel("2θ (deg)")
+
+    plt.tight_layout()
     st.pyplot(fig)
 
 def plot_intensity_map(xs: List[np.ndarray], ys: List[np.ndarray], overlay_centers: Dict[int, np.ndarray] = None):
