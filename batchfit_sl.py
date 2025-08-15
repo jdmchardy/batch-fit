@@ -261,11 +261,11 @@ with left:
     y_fit_curve = None
     x_fit_for_plot = None
     if fr is not None:
-        x_fit_for_plot = (fr["x_fit"],)
+        x_fit_for_plot = fr["x_fit"]
         y_fit_curve = fr["y_fit_curve"]
     st.write(np.shape(x_fit_for_plot))
-    st.write(np.shape(y_fit_curve))
-    st.write(len(x_fit_for_plot[0]))
+    st.write(y_fit_curve)
+    st.write(len(x_fit_for_plot))
     # Show signal plot
     plot_signal(
         x, display_y, title=f"{name}",
