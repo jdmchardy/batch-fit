@@ -284,10 +284,16 @@ with left:
 with right:
     st.subheader("Fit parameters")
     if fit_results.get(current_index) is not None and fit_results[current_index].get("params") is not None:
-        params = np.array(fit_results[current_index]["params"]).reshape(-1, 4)
-        df_params = pd.DataFrame(params, columns=["amp", "mu", "sigma", "gl"])
-        df_params.index = [f"Peak {i+1}" for i in range(len(df_params))]
-        st.dataframe(df_params, use_container_width=True)
+        if peak_function == "Gaussian":
+            params = np.array(fit_results[current_index]["params"]).reshape(-1, 3)
+            df_params = pd.DataFrame(params, columns=["amp", "mu", "sigma"])
+            df_params.index = [f"Peak {i+1}" for i in range(len(df_params))]
+            st.dataframe(df_params, use_container_width=True)
+        else:
+            params = np.array(fit_results[current_index]["params"]).reshape(-1, 4)
+            df_params = pd.DataFrame(params, columns=["amp", "mu", "sigma", "gl"])
+            df_params.index = [f"Peak {i+1}" for i in range(len(df_params))]
+            st.dataframe(df_params, use_container_width=True)
     else:
         st.info("No fit for current dataset yet. Click **Fit current**.")
 
