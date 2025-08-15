@@ -215,8 +215,6 @@ def run_single_fit(idx: int) -> dict:
         bkg_peak_prominence=bkg_peak_prominence, bkg_peak_width_multiplier=bkg_peak_width_multiplier,
         peak_width=peak_width, peak_prominence=peak_prominence
     )
-    st.write(peak_centers)
-    st.write(len(y_fit_curve))
     return {
         "Filename": name,
         "x": x, "y": y,
