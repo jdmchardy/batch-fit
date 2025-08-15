@@ -6,13 +6,11 @@ import matplotlib.pyplot as plt
 import io
 import importlib.util
 from typing import List, Tuple, Dict
-#import batchfit_JDM_v4 as batchfit_mod
 
 # ---------------------------
-# Load the user's functions from batchfit_JDM_v4.py dynamically
+# Load the user's functions from batchfit_core.py dynamically
 # ---------------------------
-SPEC_PATH = "/mount/src/batch-fit/batchfit_JDM_v4.py"
-spec = importlib.util.spec_from_file_location("batchfit_mod", SPEC_PATH)
+spec = importlib.util.spec_from_file_location("batchfit_mod", "batchfit_core.py")
 batchfit_mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(batchfit_mod)
 
