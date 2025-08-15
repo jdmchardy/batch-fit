@@ -215,7 +215,8 @@ def run_single_fit(idx: int) -> dict:
         bkg_peak_prominence=bkg_peak_prominence, bkg_peak_width_multiplier=bkg_peak_width_multiplier,
         peak_width=peak_width, peak_prominence=peak_prominence
     )
-    st.write(peak_centers, y_fit_curve)
+    st.write(peak_centers)
+    st.write(len(y_fit_curve))
     return {
         "Filename": name,
         "x": x, "y": y,
@@ -264,9 +265,6 @@ with left:
     if fr is not None:
         x_fit_for_plot = fr["x_fit"]
         y_fit_curve = fr["y_fit_curve"]
-    st.write(fr["y_fit_curve"])
-    st.write(np.shape(fr["y_fit_curve"]))
-    st.write(fr["peak_centers"])
     # Show signal plot
     plot_signal(
         x, display_y, title=f"{name}",
