@@ -26,6 +26,16 @@ fit_peak_to_data = batchfit_mod.fit_peak_to_data
 # ---------------------------
 # Utility helpers
 # ---------------------------
+
+# Simple wrapper to mimic UploadedFile
+class UploadedFileWrapper:
+    def __init__(self, file_path):
+        self.name = os.path.basename(file_path)
+        self._file_path = file_path
+    def read(self):
+        with open(self._file_path, "rb") as f:
+            return f.read()
+            
 def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
     """Attempt to load a two-column (x,y) dataset from an uploaded file-like object."""
     name = file.name
@@ -206,9 +216,7 @@ with st.sidebar:
         for file_name in os.listdir(extract_dir):
             file_path = os.path.join(extract_dir, file_name)
             if os.path.isfile(file_path):
-                f_obj = open(file_path, "rb")
-                f_obj.name = file_name  # mimic st.uploaded_file.name
-                uploaded_files.append(f_obj)
+                uploaded_files.append(UploadedFileWrapper(file_path))
     
     if uploaded_zip:
         # Clear button
