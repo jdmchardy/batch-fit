@@ -270,7 +270,7 @@ with left:
         x_range=x_range,
         peaks=(fr["peak_centers"] if fr is not None else None),
         fit_x=x_fit_for_plot,
-        fit_y_curve=y_fit_curve
+        fit_y=y_fit_curve
     )
     # Show intensity map if multiple datasets
     if len(datasets) > 1:
