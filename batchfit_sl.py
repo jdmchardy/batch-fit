@@ -64,7 +64,7 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
         pass
     raise ValueError(f"Could not parse two columns from file: {name}")
 
-def plot_signal(x, y, title='', background=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
+def plot_signal(x, y, title='', background=None, x_range=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
     fig, ax = plt.subplots(figsize=(8,4))
     ax.plot(x, y, lw=1, label="Data")
     if background is not None:
