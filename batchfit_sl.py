@@ -35,17 +35,18 @@ class UploadedFileWrapper:
     def read(self):
         with open(self._file_path, "rb") as f:
             return f.read()
-    def seek(self):
-        """Return a seekable file-like object"""
-        return io.BytesIO(self.read())
             
 def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
     """Attempt to load a two-column (x,y) dataset from an uploaded file-like object."""
     name = file.name
     data = None
     content = file.read()
+
+    # Wrap in seekable BytesIO
+    file_like = io.BytesIO(content)
+    
     # Reset pointer for any subsequent reads elsewhere
-    file.seek(0)
+    file_like.seek(0)
     # Try common formats
     for kwargs in [
         {"delimiter": None},              # whitespace
@@ -54,7 +55,7 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
         {"delimiter": ";"},
     ]:
         try:
-            data = np.loadtxt(io.BytesIO(content), **kwargs)
+            data = np.loadtxt(file_like, **kwargs)
             if data.ndim == 1 and data.size > 2:
                 # sometimes a single row — reshape to (n,2) if even length
                 if data.size % 2 == 0:
