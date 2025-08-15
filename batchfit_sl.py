@@ -64,14 +64,15 @@ def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
         pass
     raise ValueError(f"Could not parse two columns from file: {name}")
 
-def plot_signal(x, y, title='', peaks=None, background=None, x_range=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
+def plot_signal(x, y, title='', peaks=None, background=None, x_range_ROI=None, x_range_view=None, peaks_x=None, peaks_y=None, fit_x=None, fit_y=None):
     fig, ax = plt.subplots(figsize=(8,4))
     ax.plot(x, y, lw=0.8, label="Data", color="black")
     if background is not None:
         ax.plot(x, background, lw=0.8, linestyle="--", label="Background")
-    if x_range is not None:
-        ax.axvspan(x_range[0], x_range[1], alpha=0.1, label="Fit window")
-        ax.set_xlim(x_range[0], x_range[1])
+    if x_range_ROI is not None:
+        ax.axvspan(x_range_ROI[0], x_range_ROI[1], alpha=0.1, label="Fit window")
+    if x_range_view is not None:
+        ax.set_xlim(x_range_view[0], x_range_view[1])
     if peaks is not None and len(peaks)>0:
         ax.scatter(peaks, np.interp(peaks, x, y), s=20, marker="x", label="Detected peaks")
     if (fit_x is not None) and (fit_y is not None):
@@ -184,7 +185,8 @@ if not datasets:
 # Build common x-range for UI
 x_global_min = float(min(x[0] for _, x, _ in datasets))
 x_global_max = float(max(x[-1] for _, x, _ in datasets))
-x_range = st.slider("Region of Interest (x-range)", min_value=x_global_min, max_value=x_global_max, value=(x_global_min, x_global_max))
+x_range_ROI = st.slider("Region of Interest (x-range)", min_value=x_global_min, max_value=x_global_max, value=(x_global_min, x_global_max))
+x_range_view = st.slider("Plot range (x-range)", min_value=x_global_min, max_value=x_global_max, value=(x_global_min, x_global_max))
 
 # Navigation
 colA, colB, colC, colD = st.columns([1,1,1,2])
@@ -268,7 +270,8 @@ with left:
     plot_signal(
         x, display_y, title=f"{name}",
         background=bg_for_plot,
-        x_range=x_range,
+        x_range_ROI=x_range_ROI,
+        x_range_view= x_range_view, 
         peaks=(fr["peak_centers"] if fr is not None else None),
         fit_x=x_fit_for_plot,
         fit_y=y_fit_curve
