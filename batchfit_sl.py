@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 import importlib.util
+import zipfile, os
 from typing import List, Tuple, Dict
 
 # ---------------------------
@@ -189,14 +190,27 @@ if "uploader_key" not in st.session_state:
 
 # Sidebar: upload and global controls
 with st.sidebar:
-    st.header("1) Upload files")
-    uploaded_files = st.file_uploader(
-        "Upload one or more XY/CSV files (two columns: x, y).",
-        type=["xy", "txt", "dat", "csv"],
-        key=f"uploader_{st.session_state.uploader_key}",
-        accept_multiple_files=True
-    )
-    if uploaded_files:
+    st.header("1) Upload zip file of .xys")
+    uploaded_zip = st.file_uploader("Upload a ZIP of xy files (two columns: x, y)", 
+                                    type=["zip"],
+                                   key=f"uploader_{st.session_state.uploader_key}")
+
+    uploaded_files = []
+    if uploaded_zip:
+        extract_dir = "uploaded_files"
+        os.makedirs(extract_dir, exist_ok=True)
+    
+        with zipfile.ZipFile(uploaded_zip, "r") as zip_ref:
+            zip_ref.extractall(extract_dir)
+    
+        for file_name in os.listdir(extract_dir):
+            file_path = os.path.join(extract_dir, file_name)
+            if os.path.isfile(file_path):
+                f_obj = open(file_path, "rb")
+                f_obj.name = file_name  # mimic st.uploaded_file.name
+                uploaded_files.append(f_obj)
+    
+    if uploaded_zip:
         # Clear button
         if st.button("Clear uploaded files"):
             st.session_state.uploader_key += 1
