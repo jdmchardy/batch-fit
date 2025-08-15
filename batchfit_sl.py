@@ -214,7 +214,7 @@ def run_single_fit(idx: int) -> dict:
     )
     # Now perform the peak fit in the ROI
     x_fit, y_fit, background_all, background_fit, bkg_non_px, bkg_non_py, bkg_pkx, bkg_pky, y_fit_curve, params_opt, pcov, peak_centers, y_subtracted = fit_peak_to_data(
-        x=x, y=y, x_range=x_range, max_peaks=int(max_peaks), threshold=threshold, bkg_peak_threshold=bkg_peak_threshold,
+        x=x, y=y, x_range=x_range_ROI, max_peaks=int(max_peaks), threshold=threshold, bkg_peak_threshold=bkg_peak_threshold,
         bkg_peak_prominence=bkg_peak_prominence, bkg_peak_width_multiplier=bkg_peak_width_multiplier,
         peak_width=peak_width, peak_prominence=peak_prominence
     )
