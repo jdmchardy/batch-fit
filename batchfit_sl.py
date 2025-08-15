@@ -184,18 +184,22 @@ st.set_page_config(page_title="Batch Peak Fitting (Streamlit)", layout="wide")
 st.title("Batch Peak Fitting")
 st.caption("Converted from your original interactive matplotlib/Tkinter tool to Streamlit.")
 
+if "uploader_key" not in st.session_state:
+    st.session_state.uploader_key = 0
+
 # Sidebar: upload and global controls
 with st.sidebar:
     st.header("1) Upload files")
     uploaded_files = st.file_uploader(
         "Upload one or more XY/CSV files (two columns: x, y).",
         type=["xy", "txt", "dat", "csv"],
+        key=f"uploader_{st.session_state.uploader_key}",
         accept_multiple_files=True
     )
     if uploaded_files:
         # Clear button
         if st.button("Clear uploaded files"):
-            st.session_state.uploaded_files = None
+            st.session_state.uploader_key += 1
             st.rerun()
 
     st.header("2) Peak model & background")
