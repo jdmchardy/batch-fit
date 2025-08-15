@@ -35,6 +35,9 @@ class UploadedFileWrapper:
     def read(self):
         with open(self._file_path, "rb") as f:
             return f.read()
+    def as_file_like(self):
+        """Return a seekable file-like object"""
+        return io.BytesIO(self.read())
             
 def try_load_xy(file) -> Tuple[np.ndarray, np.ndarray]:
     """Attempt to load a two-column (x,y) dataset from an uploaded file-like object."""
@@ -212,6 +215,7 @@ with st.sidebar:
     
         with zipfile.ZipFile(uploaded_zip, "r") as zip_ref:
             zip_ref.extractall(extract_dir)
+            
     
         for file_name in os.listdir(extract_dir):
             file_path = os.path.join(extract_dir, file_name)
